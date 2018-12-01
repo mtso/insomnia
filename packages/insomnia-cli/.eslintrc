@@ -1,0 +1,52 @@
+{
+  "parser": "babel-eslint",
+  "extends": [
+    "semistandard",
+    "plugin:flowtype/recommended"
+  ],
+  "plugins": [
+    "react",
+    "jest",
+    "html",
+    "json",
+    "filenames",
+    "flowtype"
+  ],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "globals": {
+    "__DEV__": true,
+    "fail": true,
+    "HTMLDivElement": true,
+    "HTMLElement": true,
+    "HTMLInputElement": true,
+    "HTMLSelectElement": true
+  },
+  "env": {
+    "jest/globals": true
+  },
+  "rules": {
+    "indent": "off",
+    "no-var": "error",
+    "no-duplicate-imports": "off",
+    "react/jsx-uses-react": "error",
+    "react/jsx-uses-vars": "error",
+    "space-before-function-paren": ["error", {
+      "anonymous": "never",
+      "named": "never",
+      "asyncArrow": "always"
+  }],
+    "filenames/match-exported": [
+      "error",
+      "kebab"
+    ]
+  },
+  "settings": {
+    "flowtype": {
+      "onlyFilesWithFlowAnnotation": false
+    }
+  }
+}

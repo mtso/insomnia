@@ -1,0 +1,169 @@
+@import '../constants/colors';
+@import '../constants/dimensions';
+@import '../constants/fonts';
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+  text-align: left;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.dropdown__backdrop {
+  position: fixed;
+  z-index: 9999;
+  display: none;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  content: ' ';
+}
+
+.dropdown__menu {
+  &.dropdown__menu--open .dropdown__backdrop {
+    display: block;
+  }
+
+  .dropdown__list {
+    z-index: 99999;
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    border: 1px solid @hl-sm;
+    box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    background: var(--color-bg);
+
+    // Separate it from it's surroundings a bit
+    margin: @padding-xxs 3px;
+
+    padding-top: @radius-md;
+    padding-bottom: @radius-md;
+
+    border-radius: @radius-md;
+    overflow: auto;
+
+    .dropdown__filter {
+      border: 1px solid var(--hl-md);
+      margin: @padding-xs;
+      width: auto;
+      border-radius: @radius-sm;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding-left: @padding-sm;
+
+      // Can't "display: none" this because we need to be able to type
+      // in it. So, we'll just store it off screen
+      position: absolute;
+      left: -9999999px;
+
+      input {
+        margin: 0;
+        padding: @padding-xs @padding-sm;
+        color: var(--color-font);
+      }
+
+      color: var(--hl);
+    }
+
+    &.dropdown__list--filtering {
+      .dropdown__filter {
+        // Reposition the filter on screen
+        position: static;
+        left: auto;
+      }
+    }
+
+    &:focus {
+      outline: 0;
+    }
+
+    .dropdown__inner {
+      width: 100%;
+    }
+
+    .dropdown__text {
+      white-space: nowrap;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      & > *:not(:first-child) {
+        margin-left: 0.3em;
+      }
+
+      .dropdown__hint,
+      .dropdown__right {
+        color: @hl-xl;
+        margin-left: auto;
+        padding-left: @padding-lg;
+      }
+    }
+
+    li > button {
+      font-size: @font-size-md;
+      text-align: left;
+      padding-right: @padding-md;
+      padding-left: @padding-sm;
+      height: @line-height-xs;
+      width: 100%;
+      display: block;
+      color: var(--color-font) !important;
+      white-space: nowrap;
+      margin: 0;
+
+      i.fa:first-child {
+        display: inline-block;
+        width: 2.2em;
+        text-align: center;
+      }
+    }
+
+    li > button:hover:not(:disabled),
+    li.active > button:not(:disabled) {
+      background: @hl-sm;
+    }
+
+    li > button:active:not(:disabled) {
+      background: @hl-md;
+    }
+
+    .dropdown__divider {
+      border-bottom: 1px solid @hl-lg;
+      overflow: visible !important;
+      height: 0;
+      margin: @padding-md @padding-md @padding-md @padding-md;
+
+      .dropdown__divider__label {
+        position: relative;
+        left: calc(-1 * @padding-sm);
+        top: -0.7rem;
+        color: @hl;
+        padding-right: 1em;
+        background: var(--color-bg);
+        font-size: @font-size-xs;
+        text-transform: uppercase;
+      }
+
+      &.dropdown__divider--no-name {
+        margin: @padding-xs 0;
+
+        .dropdown__divider__label {
+          display: none;
+        }
+      }
+    }
+  }
+
+  &.dropdown__menu--open .dropdown__list {
+    display: block;
+    animation: fadeIn 200ms ease-out;
+  }
+}

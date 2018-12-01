@@ -1,0 +1,9 @@
+**/*.min.js
+build/**/*
+dist/**/*
+coverage/**/*
+node_modules/**/*
+webpack/**/*
+bin/**/*
+**/__fixtures__/prettify/*
+flow-typed/
