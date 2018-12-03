@@ -38,6 +38,5 @@ module.exports = {
     __dirname: false // Use node.js __dirname
   },
   target: 'node',
-  plugins: plugins,
-  stats: 'errors-only'
+  plugins: plugins
 };

@@ -1,14 +1,11 @@
 {
-  "publishConfig": {
-    "access": "public"
-  },
-  "version": "0.1.0",
+  "version": "0.3.0",
   "name": "insomnia-cli",
   "app": {
     "name": "insomnia-cli",
     "productName": "Insomnia CLI",
     "longName": "Insomnia REST Runner",
-    "version": "0.1.0",
+    "version": "0.3.0",
     "main": "bin/insomniac.js"
   },
   "bin": {
@@ -16,17 +13,25 @@
   },
   "files": [
     "bin",
-    "dist"
+    "dist",
+    "app",
+    "webpack",
+    ".babelrc",
+    ".eslintignore",
+    ".eslintrc",
+    ".flowconfig",
+    ".gitignore",
+    ".nvmrc"
   ],
-  "licence": "MIT",
+  "license": "MIT",
   "homepage": "https://insomnia.rest/",
   "description": "Run API tests like a robot, not a human",
   "author": "Insomnia <support@insomnia.rest>",
-  "main": "app/main.min.js",
+  "main": "dist/cli.min.js",
   "appveyorCacheBreaker": 1,
   "repository": {
     "type": "git",
-    "url": "https://github.com/getinsomnia/insomnia"
+    "url": "https://github.com/mtso/insomnia"
   },
   "scripts": {
     "lint": "eslint \"**/*.js\" \"**/*.html\" \"**/*.json\"",
@@ -181,6 +186,7 @@
     "uuid": "^3.0.0",
     "vkbeautify": "^0.99.1",
     "whatwg-fetch": "^2.0.1",
+    "winston": "^2.4.4",
     "zprint-clj": "^0.2.0"
   },
   "devDependencies": {

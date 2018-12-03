@@ -2,14 +2,18 @@
 import { delay } from './helpers';
 import * as models from '../models';
 import * as network from '../network/network';
-
-// import type { Request } from '../models/request';
-
-// export type RequestLeg = {
-//   request: Request
-// };
+import logger from 'winston';
 
 export default class RequestLeg {
+  request;
+  runner;
+  dependencyIds;
+  delayMs;
+
+  handleSend;
+  send;
+  makeRequestFinishListener;
+
   constructor(runner, request, dependencyIds, delayMs) {
     this.request = request;
     this.runner = runner;
@@ -22,7 +26,7 @@ export default class RequestLeg {
 
     runner.on('start', () => {
       if (!dependencyIds || dependencyIds.length < 1) {
-        this.handleSend();
+        this.handleSend(0); // No delay for requests without dependencies.
       } else {
         runner.on('requestFinish', this.makeRequestFinishListener(dependencyIds));
       }
@@ -40,42 +44,72 @@ export default class RequestLeg {
       return map;
     }, {});
 
-    return ({ request }) => {
+    return ({ request, error }) => {
       // Ignore the event if the finished request is not one of the dependencies.
       if (!dependencyIdsMap[request._id]) {
         return;
       }
 
+      // This means that one of the dependencies had an error and so we will never resolve.
+      if (error) {
+        this.runner.emit('requestFinish', {
+          status: 'NOT RUN',
+          request: this.request,
+          response: null,
+          error: null
+        });
+        return;
+      }
+
       delete dependencyIdsMap[request._id];
+      logger.verbose(`Dependencies left: ${Object.keys(dependencyIdsMap).length}`);
 
       if (Object.keys(dependencyIdsMap).length < 1) {
-        this.handleSend();
+        this.handleSend(this.delayMs);
       }
     };
   }
 
-  async handleSend() {
+  async handleSend(delayMs) {
     try {
-      await delay(this.delayMs);
+      logger.verbose(`Delaying for ${delayMs}ms`);
+      await delay(delayMs);
 
-      const response = await this.send();
-      const result = {
-        request: this.request,
-        response
-      };
+      const sendResponse = await this.send();
 
-      this.runner.emit('requestFinish', result);
+      let response, error, status;
+      if (sendResponse instanceof Error) {
+        error = sendResponse;
+        response = null;
+        status = 'ERROR';
+      } else {
+        error = null;
+        response = sendResponse;
+        status = response.statusCode;
+      }
+
+      const { request } = this;
+
+      this.runner.emit('requestFinish', { status, request, response, error });
     } catch (err) {
+      // Catch any unexpected errors
       this.runner.emit('error', err);
     }
   }
 
   async send() {
-    console.log('Executing request: ' + this.request.name);
-    const responsePatch = await network.send(this.request._id, this.runner.environment._id);
+    logger.info('Executing request: ' + this.request.name);
+    let responsePatch;
+    try {
+      const responsePatch = await network.send(this.request._id, this.runner.environment._id);
+    } catch (err) {
+      logger.verbose('Error sending request: ' + err.message);
+      // Assume that a previous request did not resolve.
+      // Emit an event that other requests will use to not continue.
+      return new Error('Error sending request ' + this.request._id + ': ' + err.message);
+    }
 
     // TODO: UPDATE REQUEST METADATA?? See how the electron app handles it.
-    this.response = await models.response.create(responsePatch);
-    return this.response;
+    return await models.response.create(responsePatch);
   }
 }
