@@ -5,7 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import { PLUGIN_PATH } from '../common/constants';
 import { resolveHomePath } from '../common/misc';
-import { showError } from '../../../insomnia-app/app/ui/components/modals/index';
+// import { showError } from '../../../insomnia-app/app/ui/components/modals/index';
 import type { PluginTemplateTag } from '../templating/extensions/index';
 import type { PluginTheme } from './misc';
 
@@ -105,11 +105,12 @@ async function _traversePluginPath(pluginMap: Object, allPaths: Array<string>) {
         pluginMap[pluginJson.name] = _initPlugin(pluginJson || {}, module, modulePath);
         console.log(`[plugin] Loaded ${modulePath}`);
       } catch (err) {
-        showError({
-          title: 'Plugin Error',
-          message: 'Failed to load plugin ' + filename,
-          error: err
-        });
+        console.error('[PLUGIN ERROR] ' + err);
+        // showError({
+        //   title: 'Plugin Error',
+        //   message: 'Failed to load plugin ' + filename,
+        //   error: err
+        // });
       }
     }
   }

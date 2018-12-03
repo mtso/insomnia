@@ -1,6 +1,26 @@
 // @flow
 // import * as electron from 'electron';
-import { showAlert, showPrompt } from '../../../../insomnia-app/app/ui/components/modals/index';
+// import { showAlert, showPrompt } from '../../../../insomnia-app/app/ui/components/modals/index';
+
+async function showAlert(message) {
+  await showAlert('[ALERT] ' + message);
+}
+
+async function showPrompt(message) {
+  return promptStdin('[PROMPT] ' + message);
+}
+
+async function promptStdin(message) {
+  console.log(message);
+  const stdin = process.openStdin();
+  return new Promise(resolve => {
+    stdin.addListener('data', buf => {
+      resolve(buf.toString().trim());
+      stdin.destroy();
+    });
+  });
+}
+
 import type { RenderPurpose } from '../../common/render';
 import { RENDER_PURPOSE_GENERAL, RENDER_PURPOSE_SEND } from '../../common/render';
 
@@ -12,7 +32,7 @@ export function init(renderPurpose: RenderPurpose = RENDER_PURPOSE_GENERAL): { a
           return Promise.resolve();
         }
 
-        return showAlert({ title, message });
+        return showAlert(JSON.stringify({ title, message }));
       },
       prompt(
         title: string,
@@ -29,18 +49,19 @@ export function init(renderPurpose: RenderPurpose = RENDER_PURPOSE_GENERAL): { a
           return Promise.resolve(options.defaultValue || '');
         }
 
-        return new Promise((resolve, reject) => {
-          showPrompt({
-            title,
-            ...(options || {}),
-            onCancel() {
-              reject(new Error(`Prompt ${title} cancelled`));
-            },
-            onComplete(value: string) {
-              resolve(value);
-            }
-          });
-        });
+        return showPrompt(JSON.stringify({ title, ...options }));
+        // return new Promise((resolve, reject) => {
+        //   showPrompt({
+        //     title,
+        //     ...(options || {}),
+        //     onCancel() {
+        //       reject(new Error(`Prompt ${title} cancelled`));
+        //     },
+        //     onComplete(value: string) {
+        //       resolve(value);
+        //     }
+        //   });
+        // });
       },
       getPath(name: string): string {
         switch (name.toLowerCase()) {

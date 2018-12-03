@@ -1,23 +1,21 @@
 // @flow
-// import needsRestart from 'electron-squirrel-startup';
-// import * as electron from 'electron';
-
-import * as errorHandling from './main/error-handling';
-// import * as updates from '../../insomnia-app/app/main/updates';
-// import * as windowUtils from '../../insomnia-app/app/main/window-utils';
-// import * as models from './models/index';
-import * as database from './common/database';
-// import * as workspace from './models/workspace';
-import * as models from './models';
-// import * as network from './network';
-
 import fs from 'fs';
 
-// import { CHANGELOG_BASE_URL, getAppVersion, isDevelopment, isMac } from '../../insomnia-app/app/common/constants';
-// import type { ToastNotification } from '../../insomnia-app/app/ui/components/toast';
-// import type { Stats } from '../../insomnia-app/app/models/stats';
-
 import { importRaw } from './common/import';
+import * as database from './common/database';
+import * as errorHandling from './main/error-handling';
+import * as models from './models';
+import * as network from './network/network';
+
+/**
+ * Environment Variables:
+ * - ENV
+ * - IMPORT_PATH
+ *
+ *
+ * Usage:
+ * ENV=[environment name] IMPORT_PATH=~/dev/log/Insomnia_2018-11-29.json npm run cli-start
+ */
 
 (async () => {
   // Init some important things first
@@ -62,7 +60,10 @@ import { importRaw } from './common/import';
   const environment = environments[0];
 
   const request = await models.request.getById(requestId);
-  console.log(JSON.stringify(request, null, 2));
+  // console.log(JSON.stringify(request, null, 2));
+  console.log('Found request: ' + request.name);
+
+  console.log('\n\n\n    !!! PASSED !!!\n\n\n');
 
   // const requestPatch = await network.send(request._id, environment._id);
 

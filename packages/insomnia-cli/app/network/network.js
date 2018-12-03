@@ -986,14 +986,14 @@ export function _getAwsAuthHeaders(
     .map(name => ({ name, value: signature.headers[name] }));
 }
 
-document.addEventListener('keydown', (e: KeyboardEvent) => {
-  if (e.ctrlKey || e.metaKey || e.altKey) {
-    return;
-  }
+// document.addEventListener('keydown', (e: KeyboardEvent) => {
+//   if (e.ctrlKey || e.metaKey || e.altKey) {
+//     return;
+//   }
 
-  lastUserInteraction = Date.now();
-});
+//   lastUserInteraction = Date.now();
+// });
 
-document.addEventListener('paste', (e: Event) => {
-  lastUserInteraction = Date.now();
-});
+// document.addEventListener('paste', (e: Event) => {
+//   lastUserInteraction = Date.now();
+// });

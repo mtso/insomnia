@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
-const productionConfig = require('./webpack.config.production.babel');
+// const productionConfig = require('./webpack.config.production.babel');
+const baseConfig = require('./webpack.config.base.babel');
 const pkg = require('../package.json');
 
 const PORT = pkg.dev['dev-server-port'];
@@ -24,12 +25,12 @@ if (process.env.NODE_ENV === 'development') {
   ];
 } else {
   output.path = path.join(__dirname, '../build');
-  devtool = productionConfig.devtool;
-  plugins = productionConfig.plugins;
+  devtool = baseConfig.devtool;
+  plugins = baseConfig.plugins;
 }
 
 module.exports = {
-  ...productionConfig,
+  ...baseConfig,
   devtool: devtool,
   entry: ['./cli.development.js'],
   output: output,

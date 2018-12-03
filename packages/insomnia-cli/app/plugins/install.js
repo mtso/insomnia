@@ -1,5 +1,5 @@
 // @flow
-import * as electron from 'electron';
+// import * as electron from 'electron';
 import fs from 'fs';
 import fsx from 'fs-extra';
 import childProcess from 'child_process';
@@ -8,52 +8,54 @@ import mkdirp from 'mkdirp';
 import path from 'path';
 
 export default async function(lookupName: string): Promise<void> {
-  return new Promise(async (resolve, reject) => {
-    let info: Object = {};
-    try {
-      info = await _isInsomniaPlugin(lookupName);
+  console.log('[PLUGIN INSTALL] Attempted to install plugin ' + lookupName);
+  return Promise.resolve();
+  // return new Promise(async (resolve, reject) => {
+  //   let info: Object = {};
+  //   try {
+  //     info = await _isInsomniaPlugin(lookupName);
 
-      // Get actual module name without version suffixes and things
-      const moduleName = info.name;
+  //     // Get actual module name without version suffixes and things
+  //     const moduleName = info.name;
 
-      const pluginDir = path.join(PLUGIN_PATH, moduleName);
+  //     const pluginDir = path.join(PLUGIN_PATH, moduleName);
 
-      // Make plugin directory
-      mkdirp.sync(pluginDir);
+  //     // Make plugin directory
+  //     mkdirp.sync(pluginDir);
 
-      // Download the module
-      const request = electron.remote.net.request(info.dist.tarball);
-      request.on('error', err => {
-        reject(new Error(`Failed to make plugin request ${info.dist.tarball}: ${err.message}`));
-      });
+  //     // Download the module
+  //     const request = electron.remote.net.request(info.dist.tarball);
+  //     request.on('error', err => {
+  //       reject(new Error(`Failed to make plugin request ${info.dist.tarball}: ${err.message}`));
+  //     });
 
-      const { tmpDir } = await _installPluginToTmpDir(lookupName);
-      console.log(`[plugins] Moving plugin from ${tmpDir} to ${pluginDir}`);
+  //     const { tmpDir } = await _installPluginToTmpDir(lookupName);
+  //     console.log(`[plugins] Moving plugin from ${tmpDir} to ${pluginDir}`);
 
-      // Move entire module to plugins folder
-      fsx.moveSync(path.join(tmpDir, moduleName), pluginDir, {
-        overwrite: true
-      });
+  //     // Move entire module to plugins folder
+  //     fsx.moveSync(path.join(tmpDir, moduleName), pluginDir, {
+  //       overwrite: true
+  //     });
 
-      // Move each dependency into node_modules folder
-      const pluginModulesDir = path.join(pluginDir, 'node_modules');
-      mkdirp.sync(pluginModulesDir);
-      for (const name of fs.readdirSync(tmpDir)) {
-        const src = path.join(tmpDir, name);
-        if (name === moduleName || !fs.statSync(src).isDirectory()) {
-          continue;
-        }
+  //     // Move each dependency into node_modules folder
+  //     const pluginModulesDir = path.join(pluginDir, 'node_modules');
+  //     mkdirp.sync(pluginModulesDir);
+  //     for (const name of fs.readdirSync(tmpDir)) {
+  //       const src = path.join(tmpDir, name);
+  //       if (name === moduleName || !fs.statSync(src).isDirectory()) {
+  //         continue;
+  //       }
 
-        const dest = path.join(pluginModulesDir, name);
-        fsx.moveSync(src, dest, { overwrite: true });
-      }
-    } catch (err) {
-      reject(err);
-      return;
-    }
+  //       const dest = path.join(pluginModulesDir, name);
+  //       fsx.moveSync(src, dest, { overwrite: true });
+  //     }
+  //   } catch (err) {
+  //     reject(err);
+  //     return;
+  //   }
 
-    resolve();
-  });
+  //   resolve();
+  // });
 }
 
 async function _isInsomniaPlugin(lookupName: string): Promise<Object> {
@@ -166,7 +168,13 @@ async function _installPluginToTmpDir(lookupName: string): Promise<{ tmpDir: str
 }
 
 function _getYarnPath() {
-  const { app } = electron.remote || electron;
+  // const { app } = electron.remote || electron;
+
+  const app = {
+    getAppPath() {
+      return '~/app';
+    }
+  };
 
   // TODO: This is brittle. Make finding this more robust.
   if (isDevelopment()) {
