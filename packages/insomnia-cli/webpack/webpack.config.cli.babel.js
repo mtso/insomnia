@@ -1,6 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
-// const productionConfig = require('./webpack.config.production.babel');
+const productionConfig = require('./webpack.config.production.babel');
 const baseConfig = require('./webpack.config.base.babel');
 const pkg = require('../package.json');
 
@@ -24,19 +24,20 @@ if (process.env.NODE_ENV === 'development') {
     })
   ];
 } else {
-  output.path = path.join(__dirname, '../build');
+  output.path = path.join(__dirname, '../dist');
   devtool = baseConfig.devtool;
   plugins = baseConfig.plugins;
 }
 
 module.exports = {
-  ...baseConfig,
+  ...productionConfig,
   devtool: devtool,
   entry: ['./cli.development.js'],
   output: output,
   node: {
     __dirname: false // Use node.js __dirname
   },
-  target: 'node', // 'electron-main',
-  plugins: plugins
+  target: 'node',
+  plugins: plugins,
+  stats: 'errors-only'
 };

@@ -16,7 +16,8 @@
     "app-build": "lerna run build --stream --scope=insomnia-app",
     "app-package": "lerna run package --stream --scope=insomnia-app",
     "format-code": "prettier --write \"**/*.js\"",
-    "cli-start": "lerna run start --stream --scope=insomnia-cli"
+    "cli-start": "lerna run start --stream --scope=insomnia-cli",
+    "cli-build": "lerna run build --stream --scope=insomnia-cli"
   },
   "husky": {
     "hooks": {

@@ -1,4 +1,6 @@
 // @flow
+import commandLineArgs from 'command-line-args';
+import commandLineUsage from 'command-line-usage';
 import fs from 'fs';
 
 import { importRaw } from './common/import';
@@ -6,6 +8,47 @@ import * as database from './common/database';
 import * as errorHandling from './main/error-handling';
 import * as models from './models';
 import Runner from './cli/runner';
+
+const usageContent = [
+  {
+    header: 'Insomnia REST CLI Runner',
+    content: 'Runs API tests like a {italic robot}, not a {italic human}.'
+  },
+  {
+    header: 'Synopsis',
+    content:
+      '$ insomniac [Insomnia export filepath] --request-groups [folder] --environment [sub environment]'
+  },
+  {
+    header: 'Options',
+    optionList: [
+      {
+        name: 'request-groups',
+        alias: 'g',
+        typeLabel: '{underline folder}',
+        description: 'The folder of requests to run.'
+      },
+      {
+        name: 'environment',
+        alias: 'e',
+        typeLabel: '{underline name}',
+        description: 'Name of sub environment which contains environment variables.'
+      },
+      {
+        name: 'help',
+        alias: 'h',
+        description: 'Print this usage guide.'
+      }
+    ]
+  }
+];
+
+const commandLineOptions = [
+  { name: 'environment', alias: 'e', type: String },
+  { name: 'request-groups', alias: 'g', type: String, multiple: true },
+  { name: 'insomnia-export-file', alias: 'f', type: String, defaultOption: true },
+  { name: 'help', alias: 'h', type: Boolean }
+];
 
 /**
  * Environment Variables:
@@ -20,8 +63,10 @@ import Runner from './cli/runner';
 (async () => {
   try {
     await cliMain();
+    process.exit(0);
   } catch (err) {
     console.error(err);
+    process.exit(1);
   }
 })();
 
@@ -30,13 +75,31 @@ async function cliMain() {
   await database.init(models.types(), { inMemoryOnly: true });
   await errorHandling.init();
 
-  // Argument setups.
-  const importFilepath = process.env.IMPORT_PATH;
-  const environmentName = process.env.ENV;
-  const requestGroupName = process.env.GROUP;
+  // Set up arguments.
+  const options = commandLineArgs(commandLineOptions);
+  if (options.help) {
+    const usage = commandLineUsage(usageContent);
+    console.log(usage);
+    return;
+  }
+
+  if (!options['insomnia-export-file']) {
+    throw new Error('Must specify a source insomnia export filepath');
+  }
+  if (!options['request-groups'] || options['request-groups'].length < 1) {
+    throw new Error('Must specify a request group with --request-groups flag');
+  }
+  if (!options['environment']) {
+    throw new Error('Must specify an environment with --environment flag');
+  }
+
+  const importFilepath = options['insomnia-export-file'];
+  const environmentName = options['environment'];
+  // TODO: Support multiple request groups.
+  const requestGroupName = options['request-groups'][0];
 
   // LOAD WORKSPACE
-  console.log('Importing workspace from', importFilepath);
+  console.log('Importing resources from', importFilepath);
   const { workspace, summary } = await importFile(importFilepath);
 
   const runner = new Runner(workspace);

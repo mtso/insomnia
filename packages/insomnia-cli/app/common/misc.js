@@ -6,6 +6,7 @@ import uuid from 'uuid';
 import zlib from 'zlib';
 import { join as pathJoin } from 'path';
 import { DEBOUNCE_MILLIS } from './constants';
+import userHome from 'user-home';
 
 const ESCAPE_REGEX_MATCH = /[-[\]/{}()*+?.\\^$|]/g;
 
@@ -338,7 +339,7 @@ export async function waitForStreamToFinish(s: Readable | Writable): Promise<voi
   });
 }
 
+// Default data directory to '$HOME/.insomnia-cli'.
 export function getDataDirectory(): string {
-  // const { app } = electron.remote || electron;
-  return process.env.INSOMNIA_DATA_PATH || '~/.insomnia';// app.getPath('userData');
+  return process.env.INSOMNIA_DATA_PATH || userHome + '/.insomnia-cli';
 }
