@@ -7,7 +7,7 @@ import clone from 'clone';
 import * as models from '../models';
 import { CONTENT_TYPE_GRAPHQL } from '../common/constants';
 import * as db from './database';
-// import * as templating from '../templating';
+import * as templating from '../templating';
 import type { CookieJar } from '../models/cookie-jar';
 import type { Environment } from '../models/environment';
 
@@ -148,13 +148,13 @@ export async function render<T>(
       // Do nothing to these types
     } else if (typeof x === 'string') {
       try {
-        x = ''; //await templating.render(x, { context, path });
+        x = await templating.render(x, { context, path });
 
         // If the variable outputs a tag, render it again. This is a common use
         // case for environment variables:
         //   {{ foo }} => {% uuid 'v4' %} => dd265685-16a3-4d76-a59c-e8264c16835a
         if (x.includes('{%')) {
-          x = ''; //await templating.render(x, { context, path });
+          x = await templating.render(x, { context, path });
         }
       } catch (err) {
         if (errorMode !== KEEP_ON_ERROR) {

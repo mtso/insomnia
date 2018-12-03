@@ -1,3 +1,4 @@
+global.window = {};
 import 'whatwg-fetch';
 import { parse as urlParse } from 'url';
 import { getClientString } from './constants';

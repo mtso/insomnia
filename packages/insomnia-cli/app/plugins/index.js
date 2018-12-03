@@ -9,6 +9,8 @@ import { resolveHomePath } from '../common/misc';
 import type { PluginTemplateTag } from '../templating/extensions/index';
 import type { PluginTheme } from './misc';
 
+global.require = require;
+
 export type Plugin = {
   name: string,
   description: string,
@@ -50,6 +52,76 @@ const CORE_PLUGINS = [
   'insomnia-plugin-cookie-jar',
   'insomnia-plugin-core-themes'
 ];
+
+const insomniaPluginBase64 = require('insomnia-plugin-base64');
+const insomniaPluginBase64PackageJson = require('insomnia-plugin-base64/package.json');
+const insomniaPluginHash = require('insomnia-plugin-hash');
+const insomniaPluginHashPackageJson = require('insomnia-plugin-hash/package.json');
+const insomniaPluginFile = require('insomnia-plugin-file');
+const insomniaPluginFilePackageJson = require('insomnia-plugin-file/package.json');
+const insomniaPluginNow = require('insomnia-plugin-now');
+const insomniaPluginNowPackageJson = require('insomnia-plugin-now/package.json');
+const insomniaPluginUuid = require('insomnia-plugin-uuid');
+const insomniaPluginUuidPackageJson = require('insomnia-plugin-uuid/package.json');
+const insomniaPluginPrompt = require('insomnia-plugin-prompt');
+const insomniaPluginPromptPackageJson = require('insomnia-plugin-prompt/package.json');
+const insomniaPluginRequest = require('insomnia-plugin-request');
+const insomniaPluginRequestPackageJson = require('insomnia-plugin-request/package.json');
+const insomniaPluginResponse = require('insomnia-plugin-response');
+const insomniaPluginResponsePackageJson = require('insomnia-plugin-response/package.json');
+const insomniaPluginJsonpath = require('insomnia-plugin-jsonpath');
+const insomniaPluginJsonpathPackageJson = require('insomnia-plugin-jsonpath/package.json');
+const insomniaPluginCookieJar = require('insomnia-plugin-cookie-jar');
+const insomniaPluginCookieJarPackageJson = require('insomnia-plugin-cookie-jar/package.json');
+const insomniaPluginCoreThemes = require('insomnia-plugin-core-themes');
+const insomniaPluginCoreThemesPackageJson = require('insomnia-plugin-core-themes/package.json');
+
+const tempPluginMap = {
+  'insomnia-plugin-base64': {
+    module: insomniaPluginBase64,
+    packageJson: insomniaPluginBase64PackageJson
+  },
+  'insomnia-plugin-hash': {
+    module: insomniaPluginHash,
+    packageJson: insomniaPluginHashPackageJson
+  },
+  'insomnia-plugin-file': {
+    module: insomniaPluginFile,
+    packageJson: insomniaPluginFilePackageJson
+  },
+  'insomnia-plugin-now': {
+    module: insomniaPluginNow,
+    packageJson: insomniaPluginNowPackageJson
+  },
+  'insomnia-plugin-uuid': {
+    module: insomniaPluginUuid,
+    packageJson: insomniaPluginUuidPackageJson
+  },
+  'insomnia-plugin-prompt': {
+    module: insomniaPluginPrompt,
+    packageJson: insomniaPluginPromptPackageJson
+  },
+  'insomnia-plugin-request': {
+    module: insomniaPluginRequest,
+    packageJson: insomniaPluginRequestPackageJson
+  },
+  'insomnia-plugin-response': {
+    module: insomniaPluginResponse,
+    packageJson: insomniaPluginResponsePackageJson
+  },
+  'insomnia-plugin-jsonpath': {
+    module: insomniaPluginJsonpath,
+    packageJson: insomniaPluginJsonpathPackageJson
+  },
+  'insomnia-plugin-cookie-jar': {
+    module: insomniaPluginCookieJar,
+    packageJson: insomniaPluginCookieJarPackageJson
+  },
+  'insomnia-plugin-core-themes': {
+    module: insomniaPluginCoreThemes,
+    packageJson: insomniaPluginCoreThemesPackageJson
+  }
+};
 
 let plugins: ?Array<Plugin> = null;
 
@@ -144,9 +216,20 @@ export async function getPlugins(force: boolean = false): Promise<Array<Plugin>>
     };
 
     for (const p of CORE_PLUGINS) {
-      const pluginJson = global.require(`${p}/package.json`);
-      const pluginModule = global.require(p);
-      pluginMap[pluginJson.name] = _initPlugin(pluginJson, pluginModule);
+      const data = tempPluginMap[p];
+      pluginMap[data.packageJson.name] = _initPlugin(data.packageJson, data.module);
+      // if (p === insomniaPluginBase64PackageJson.name) {
+      //   const pluginJson = insomniaPluginBase64;
+      //   const pluginModule = insomniaPluginBase64PackageJson;
+      //   pluginMap[pluginJson.name] = _initPlugin(pluginJson, pluginModule);
+      // }
+      // else {
+      // const pluginJson = global.require(`${p}/package.json`);
+      // const pluginModule = global.require(p);
+      // // const pluginJson = _require(`${p}/package.json`);
+      // // const pluginModule = _require(p);
+      // pluginMap[pluginJson.name] = _initPlugin(pluginJson, pluginModule);
+      // }
     }
 
     await _traversePluginPath(pluginMap, allPaths);

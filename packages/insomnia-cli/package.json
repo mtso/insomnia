@@ -31,7 +31,8 @@
     "start": "concurrently --kill-others \"npm run start:cli\"",
     "build": "node ./scripts/build.js",
     "package": "node ./scripts/package.js",
-    "bootstrap": "rimraf node_modules/fsevents && electron-rebuild -f -w insomnia-libcurl"
+    "bootstrap:electron": "rimraf node_modules/fsevents && electron-rebuild -f -w insomnia-libcurl",
+    "bootstrap": "npm install insomnia-libcurl insomnia-url insomnia-cookies insomnia-importers     insomnia-plugin-base64 insomnia-plugin-cookie-jar insomnia-plugin-core-themes insomnia-plugin-file insomnia-plugin-hash insomnia-plugin-jsonpath insomnia-plugin-now insomnia-plugin-prompt insomnia-plugin-request insomnia-plugin-response insomnia-plugin-uuid --build-from-source"
   },
   "dev": {
     "dev-server-port": 3333
@@ -119,9 +120,9 @@
     "hkdf": "^0.0.2",
     "html-entities": "^1.2.0",
     "iconv-lite": "^0.4.15",
-    "insomnia-cookies": "^0.0.11",
+    "insomnia-cookies": "file:../insomnia-cookies",
     "insomnia-httpsnippet": "^1.16.17",
-    "insomnia-importers": "^2.0.11",
+    "insomnia-importers": "file:../insomnia-importers",
     "insomnia-libcurl": "0.0.22",
     "insomnia-plugin-base64": "^1.0.5",
     "insomnia-plugin-cookie-jar": "^1.0.7",
@@ -135,7 +136,7 @@
     "insomnia-plugin-response": "^1.0.15",
     "insomnia-plugin-uuid": "^1.0.9",
     "insomnia-prettify": "^0.1.6",
-    "insomnia-url": "^0.1.5",
+    "insomnia-url": "file:../insomnia-url",
     "insomnia-xpath": "^1.0.8",
     "jsonlint": "^1.6.3",
     "jsonpath": "^0.2.12",

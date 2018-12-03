@@ -145,7 +145,7 @@ async function getNunjucks(renderMode: string) {
 
   const nj = nunjucks.configure(config);
 
-  const allTemplateTagPlugins = []; // await plugins.getTemplateTags();
+  const allTemplateTagPlugins = await plugins.getTemplateTags();
   const allExtensions = allTemplateTagPlugins;
   for (let i = 0; i < allExtensions.length; i++) {
     const { templateTag, plugin } = allExtensions[i];

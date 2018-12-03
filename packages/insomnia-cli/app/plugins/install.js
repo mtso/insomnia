@@ -172,6 +172,7 @@ function _getYarnPath() {
 
   const app = {
     getAppPath() {
+      // return './packages/insomnia-cli';
       return '~/app';
     }
   };
