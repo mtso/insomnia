@@ -218,6 +218,8 @@ export async function getPlugins(force: boolean = false): Promise<Array<Plugin>>
     for (const p of CORE_PLUGINS) {
       const data = tempPluginMap[p];
       pluginMap[data.packageJson.name] = _initPlugin(data.packageJson, data.module);
+      // TODO: FIX PLUGIN LOADING! Make the requires dynamic once again.
+      //
       // if (p === insomniaPluginBase64PackageJson.name) {
       //   const pluginJson = insomniaPluginBase64;
       //   const pluginModule = insomniaPluginBase64PackageJson;
