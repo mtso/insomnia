@@ -8,6 +8,7 @@ export const getRequestDependencyIds = request => {
   const fieldsToCheck = [
     request.body && request.body.text,
     request.url,
+    request.description,
     ...request.headers.map(h => h.value)
   ];
 

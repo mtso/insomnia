@@ -92,23 +92,26 @@ export default class RequestLeg {
 
       this.runner.emit('requestFinish', { status, request, response, error });
     } catch (err) {
+      logger.error(err);
       // Catch any unexpected errors
       this.runner.emit('error', err);
     }
   }
 
   async send() {
-    logger.info('Executing request: ' + this.request.name);
+    logger.info(
+      `Executing request: ${(this.request.method + ' ').slice(0, 4)} ${this.request.name}`
+    );
+
     let responsePatch;
     try {
-      const responsePatch = await network.send(this.request._id, this.runner.environment._id);
+      responsePatch = await network.send(this.request._id, this.runner.environment._id);
     } catch (err) {
       logger.verbose('Error sending request: ' + err.message);
       // Assume that a previous request did not resolve.
       // Emit an event that other requests will use to not continue.
       return new Error('Error sending request ' + this.request._id + ': ' + err.message);
     }
-
     // TODO: UPDATE REQUEST METADATA?? See how the electron app handles it.
     return await models.response.create(responsePatch);
   }

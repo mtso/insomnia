@@ -22,7 +22,7 @@ const OPTION_DELAY = 'delay';
 const usageContent = [
   {
     header: 'Insomnia REST CLI Runner',
-    content: 'Runs API tests like a {italic robot}, not a {italic human}.'
+    content: 'Runs Insomnia requests like a {italic robot}, not a {italic human}.'
   },
   {
     header: 'Synopsis',

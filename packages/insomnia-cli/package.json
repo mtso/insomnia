@@ -1,11 +1,11 @@
 {
-  "version": "0.3.0",
+  "version": "0.4.0",
   "name": "insomnia-cli",
   "app": {
     "name": "insomnia-cli",
     "productName": "Insomnia CLI",
     "longName": "Insomnia REST Runner",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "main": "bin/insomniac.js"
   },
   "bin": {
@@ -25,7 +25,7 @@
   ],
   "license": "MIT",
   "homepage": "https://insomnia.rest/",
-  "description": "Run API tests like a robot, not a human",
+  "description": "Runs Insomnia requests like a robot, not a human",
   "author": "Insomnia <support@insomnia.rest>",
   "main": "dist/cli.min.js",
   "appveyorCacheBreaker": 1,

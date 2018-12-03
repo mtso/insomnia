@@ -7,7 +7,7 @@ The Insomnia CLI runner.
 ```
 Insomnia REST CLI Runner
 
-  Runs API tests like a robot, not a human.
+  Runs Insomnia requests like a robot, not a human.
 
 Synopsis
 
